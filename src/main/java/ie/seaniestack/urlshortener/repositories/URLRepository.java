@@ -1,14 +1,14 @@
 package ie.seaniestack.urlshortener.repositories;
 
-import ie.seaniestack.urlshortener.entities.URL;
+import ie.seaniestack.urlshortener.entities.UrlLink;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface URLRepository extends JpaRepository<URL, Long> {
-    Optional<URL> findByShortURL(String shortURL);
+public interface URLRepository extends JpaRepository<UrlLink, Long> {
+    Optional<UrlLink> findByShortURL(String shortURL);
 
-    Optional<URL> findByOriginalURL(String originalURL);
+    Optional<UrlLink> findByOriginalURL(String originalURL);
 }

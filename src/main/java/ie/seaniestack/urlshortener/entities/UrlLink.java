@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-public class URL {
+public class UrlLink {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,7 @@ public class URL {
     private String originalURL;
     private String shortURL;
 
-    public URL(String originalURL, String shortURL) {
+    public UrlLink(String originalURL, String shortURL) {
         this.originalURL = originalURL;
         this.shortURL = shortURL;
     }

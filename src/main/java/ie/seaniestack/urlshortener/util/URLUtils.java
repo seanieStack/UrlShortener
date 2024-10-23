@@ -1,9 +1,13 @@
 package ie.seaniestack.urlshortener.util;
 
-import ie.seaniestack.urlshortener.entities.URL;
+import ie.seaniestack.urlshortener.UrlShortenerConstants;
+import ie.seaniestack.urlshortener.entities.UrlLink;
 import ie.seaniestack.urlshortener.repositories.URLRepository;
 import lombok.experimental.UtilityClass;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,8 +15,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @UtilityClass
 public class URLUtils {
 
-    private static final Set<String> concurentURLSet = ConcurrentHashMap.newKeySet();
-    private static final int urlLength = 7;
+    private final Set<String> concurentURLSet = ConcurrentHashMap.newKeySet();
+    private final SecureRandom random = new SecureRandom();
 
     public synchronized String generateShortURL(URLRepository urlRepository) {
         if (concurentURLSet.isEmpty()) {
@@ -29,19 +33,27 @@ public class URLUtils {
     }
 
     private String generateRandomString() {
-        String ALPHA_NUMERIC_STRING = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < urlLength; i++) {
-            int character = (int) (Math.random() * ALPHA_NUMERIC_STRING.length());
-            builder.append(ALPHA_NUMERIC_STRING.charAt(character));
+        for (int i = 0; i < UrlShortenerConstants.URL_LENGTH; i++) {
+            int character = random.nextInt(UrlShortenerConstants.ALPHA_NUMERIC_STRING.length());
+            builder.append(UrlShortenerConstants.ALPHA_NUMERIC_STRING.charAt(character));
         }
         return builder.toString();
     }
 
     private void updateConcurrentURLSet(URLRepository urlRepository) {
-        List<URL> urls = urlRepository.findAll();
-        for (URL url : urls) {
+        List<UrlLink> urls = urlRepository.findAll();
+        for (UrlLink url : urls) {
             concurentURLSet.add(url.getShortURL());
+        }
+    }
+
+    public boolean isValidURL(String url){
+        try {
+            new URI(url);
+            return true;
+        } catch (URISyntaxException e) {
+            return false;
         }
     }
 }
